@@ -44,7 +44,7 @@ jobs:
         run: npm install --prefer-offline --no-audit
 
       - name: Run benchmark
-        run: node benchmark/memory/benchmark.mjs hot-storage
+        run: make dist && node benchmark/memory/benchmark.mjs hot-storage
 
   redis:
     runs-on: ubuntu-latest
@@ -91,4 +91,4 @@ jobs:
         run: npm install --prefer-offline --no-audit
 
       - name: Run benchmark
-        run: node benchmark/memory/benchmark.mjs redus
+        run: make dist && node benchmark/memory/benchmark.mjs redis
