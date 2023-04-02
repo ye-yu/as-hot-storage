@@ -14,7 +14,7 @@ import {
 } from "./storages";
 
 const PERMANENT_STORAGE: u32 = -1;
-const NULL_AS_ERROR = new Error("null")
+const NULL_AS_ERROR = new Error("null");
 
 function checkKeyType(key: string, keyType: KeyType): void {
   if (!keyInfos.has(key)) return;
@@ -128,22 +128,12 @@ export function getFloat(key: string): f64 {
   return storedValue.value;
 }
 
-export function activeKeys(): i32 {
-  function keyIsActive(e: KeyInfo, _: i32, __: KeyInfo[]): boolean {
-    const now = u32(Date.now());
-    return e.isPermanent || now < e.expiredAt
-  };
-
-  return keyInfos.values().filter(keyIsActive).length
-}
-
 export function removeFloat(key: string): void {
   removeFromStorage(floatStorage, key);
 }
 
-
 function minI32(left: i32, right: i32): i32 {
-  return left < right ? left : right
+  return left < right ? left : right;
 }
 
 export function expiringKeyLoop(): void {
@@ -154,7 +144,7 @@ export function expiringKeyLoop(): void {
       .sort(() => i32(Math.random() - 0.5))
       .slice(0, minI32(20, keySize));
     const now = u32(Date.now());
-    let expired = 0
+    let expired = 0;
     for (let index = 0; index < randomisedKeys.length; index++) {
       const element = randomisedKeys[index];
       if (now <= element.expiredAt) {
@@ -170,9 +160,11 @@ export function expiringKeyLoop(): void {
         removeFromStorage(floatStorage, element.keyName);
       }
     }
-  
+
     if (expired < 5) {
-      return
+      return;
     }
   }
 }
+
+export * from "./storageInfo";
