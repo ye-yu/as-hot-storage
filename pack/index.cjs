@@ -67,6 +67,11 @@ async function instantiate(module, imports = {}) {
         key = __lowerString(key) || __notnull();
         return __liftString(exports.getString(key) >>> 0);
       },
+      removeString(key) {
+        // assembly/index/removeString(~lib/string/String) => void
+        key = __lowerString(key) || __notnull();
+        exports.removeString(key);
+      },
       setInt(key, value, ttlSeconds) {
         // assembly/index/setInt(~lib/string/String, i32, u32?) => void
         key = __lowerString(key) || __notnull();
@@ -78,6 +83,11 @@ async function instantiate(module, imports = {}) {
         key = __lowerString(key) || __notnull();
         return exports.getInt(key);
       },
+      removeInt(key) {
+        // assembly/index/removeInt(~lib/string/String) => void
+        key = __lowerString(key) || __notnull();
+        exports.removeInt(key);
+      },
       setFloat(key, value, ttlSeconds) {
         // assembly/index/setFloat(~lib/string/String, f64, u32?) => void
         key = __lowerString(key) || __notnull();
@@ -88,6 +98,23 @@ async function instantiate(module, imports = {}) {
         // assembly/index/getFloat(~lib/string/String) => f64
         key = __lowerString(key) || __notnull();
         return exports.getFloat(key);
+      },
+      removeFloat(key) {
+        // assembly/index/removeFloat(~lib/string/String) => void
+        key = __lowerString(key) || __notnull();
+        exports.removeFloat(key);
+      },
+      activeKeys() {
+        // assembly/storageInfo/activeKeys() => ~lib/array/Array<~lib/string/String>
+        return __liftArray(
+          (pointer) => __liftString(__getU32(pointer)),
+          2,
+          exports.activeKeys() >>> 0
+        );
+      },
+      dump() {
+        // assembly/storageInfo/dump() => ~lib/string/String
+        return __liftString(exports.dump() >>> 0);
       },
     },
     exports
@@ -114,6 +141,15 @@ async function instantiate(module, imports = {}) {
       memoryU16[(pointer >>> 1) + i] = value.charCodeAt(i);
     return pointer;
   }
+  function __liftArray(liftElement, align, pointer) {
+    if (!pointer) return null;
+    const dataStart = __getU32(pointer + 4),
+      length = __dataview.getUint32(pointer + 12, true),
+      values = new Array(length);
+    for (let i = 0; i < length; ++i)
+      values[i] = liftElement(dataStart + ((i << align) >>> 0));
+    return values;
+  }
   const refcounts = new Map();
   function __retain(pointer) {
     if (pointer) {
@@ -136,6 +172,15 @@ async function instantiate(module, imports = {}) {
   }
   function __notnull() {
     throw TypeError("value must not be null");
+  }
+  let __dataview = new DataView(memory.buffer);
+  function __getU32(pointer) {
+    try {
+      return __dataview.getUint32(pointer, true);
+    } catch {
+      __dataview = new DataView(memory.buffer);
+      return __dataview.getUint32(pointer, true);
+    }
   }
   return adaptedExports;
 }
