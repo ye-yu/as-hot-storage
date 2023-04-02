@@ -14,6 +14,7 @@ import {
 } from "./storages";
 
 const PERMANENT_STORAGE: u32 = -1;
+const NULL_AS_ERROR = new Error("null")
 
 function checkKeyType(key: string, keyType: KeyType): void {
   if (!keyInfos.has(key)) return;
@@ -65,30 +66,30 @@ function removeString(key: string): void {
 
 export function setInt(
   key: string,
-  value: i64,
+  value: i32,
   ttlSeconds: u32 = PERMANENT_STORAGE
 ): void {
   checkKeyType(key, KeyType.Int);
   const now = u32(Date.now());
   const expireAt = now + ttlSeconds * 1000;
   const isPermanent = ttlSeconds === PERMANENT_STORAGE;
-  const storedValue = new TypedStoredValue<i64>(value, expireAt, isPermanent);
+  const storedValue = new TypedStoredValue<i32>(value, expireAt, isPermanent);
   const keyInfo = keyInfos.has(key)
     ? keyInfos.get(key)
     : new KeyInfo(key, KeyType.Int, expireAt, isPermanent);
   setToStorage(intStorage, key, keyInfo, storedValue);
 }
 
-export function getInt(key: string): i64 {
+export function getInt(key: string): i32 {
   checkKeyType(key, KeyType.Int);
-  const storedValue: TypedStoredValue<i64> | null = intStorage.has(key)
+  const storedValue: TypedStoredValue<i32> | null = intStorage.has(key)
     ? intStorage.get(key)
     : null;
-  if (storedValue === null) return 0;
+  if (storedValue === null) throw NULL_AS_ERROR;
   const now = u32(Date.now());
   if (now > storedValue.expireAt && !storedValue.isPermanent) {
     removeInt(key);
-    return 0;
+    throw NULL_AS_ERROR;
   }
   return storedValue.value;
 }
@@ -118,11 +119,11 @@ export function getFloat(key: string): f64 {
   const storedValue: TypedStoredValue<f64> | null = floatStorage.has(key)
     ? floatStorage.get(key)
     : null;
-  if (storedValue === null) return 0;
+  if (storedValue === null) throw NULL_AS_ERROR;
   const now = u32(Date.now());
   if (now > storedValue.expireAt && !storedValue.isPermanent) {
     removeFloat(key);
-    return 0;
+    throw NULL_AS_ERROR;
   }
   return storedValue.value;
 }
