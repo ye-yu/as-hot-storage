@@ -45,3 +45,15 @@ storage.getString("key");
 storage.removeString("key");
 storage.getString("key"); // === null
 ```
+
+# On exit
+When all internal processes has completed, you must close the hot storage to gracefully shutdown.
+
+```js
+import storage from 'as-hot-storage';
+
+storage.setInt("pi", 3)
+// extensive operations
+
+storage.close()
+```
