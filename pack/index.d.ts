@@ -121,6 +121,13 @@ declare interface AsHotStorageType {
    * @returns `~lib/string/String` the json-string dump of the whole storage
    */
   dump(): string;
+
+  /** gracefully shutdown hot storage */
+  stop(): void;
+
+
+  /** restarts event loop */
+  restart(): void;
 }
 
 declare const AsHotStorage: AsHotStorageType;

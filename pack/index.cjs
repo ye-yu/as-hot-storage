@@ -197,7 +197,7 @@ module.exports = async () => {
       {}
     ))(path.join(currentDir, "app.wasm"));
 
-  setInterval(module.expiringKeyLoop, 10000);
+  let interval = setInterval(module.expiringKeyLoop, 10000);
 
   const {
     setString,
@@ -230,6 +230,12 @@ module.exports = async () => {
     activeKeysSize,
     activeKeys,
     dump,
+    stop() {
+      clearInterval(interval)
+      interval = null;
+      instantiatedModule = null;
+      return 
+    }
   });
 };
 

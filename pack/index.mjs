@@ -198,7 +198,18 @@ const {
     {}
   ))(new URL("app.wasm", import.meta.url));
 
-setInterval(expiringKeyLoop, 10000);
+let interval = setInterval(expiringKeyLoop, 10000);
+
+function stop() {
+  clearInterval(interval)
+  interval = null;
+}
+
+function restart() {
+  stop()
+  interval = setInterval(expiringKeyLoop, 10000);
+  expiringKeyLoop()
+}
 
 function wrapNullErrorAsNullForGetFunctions(cb) {
   return (key) => {
@@ -214,6 +225,7 @@ function wrapNullErrorAsNullForGetFunctions(cb) {
 const getInt = wrapNullErrorAsNullForGetFunctions(_getInt);
 const getFloat = wrapNullErrorAsNullForGetFunctions(_getFloat);
 
+
 export {
   setString,
   getString,
@@ -227,6 +239,8 @@ export {
   activeKeysSize,
   activeKeys,
   dump,
+  restart,
+  stop,
 };
 
 export default {
@@ -242,4 +256,6 @@ export default {
   activeKeysSize,
   activeKeys,
   dump,
+  restart,
+  stop,
 };
