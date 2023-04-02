@@ -1,26 +1,26 @@
 {
   "name": "as-hot-storage",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "1.0.0-rc1",
+  "displayName": "WASM Hot Storage",
+  "description": "Redis-like hot storage written in AssemblyScript",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.cjs"
+    }
+  },
   "scripts": {
     "test": "node tests",
     "asbuild:debug": "asc assembly/index.ts --target debug",
     "asbuild:release": "asc assembly/index.ts --target release",
-    "asbuild": "npm run asbuild:debug && npm run asbuild:release",
-    "start": "npx serve ."
+    "asbuild": "npm run asbuild:debug && npm run asbuild:release"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "assemblyscript": "^0.27.1"
+    "assemblyscript": "^0.27.1",
+    "assemblyscript-json": "^1.1.0"
   },
-  "type": "module",
-  "exports": {
-    ".": {
-      "import": "./build/release.js",
-      "types": "./build/release.d.ts"
-    }
-  }
+  "type": "module"
 }
