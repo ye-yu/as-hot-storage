@@ -228,3 +228,18 @@ export {
   activeKeys,
   dump,
 };
+
+export default {
+  setString,
+  getString,
+  removeString,
+  setInt,
+  getInt,
+  removeInt,
+  setFloat,
+  getFloat,
+  removeFloat,
+  activeKeysSize,
+  activeKeys,
+  dump,
+};
