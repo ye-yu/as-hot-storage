@@ -12,3 +12,6 @@ publish: dist
 
 prerelease: dist
 	cd dist && npm publish --tag next
+
+test: dist
+	bash ./run-tests.sh
