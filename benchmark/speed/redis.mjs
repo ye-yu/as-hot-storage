@@ -12,9 +12,6 @@ export const methods = {
   get(key) {
     return client.get(key);
   },
-  delete(key) {
-    return client.del(key);
-  },
   close() {
     return client.disconnect();
   },

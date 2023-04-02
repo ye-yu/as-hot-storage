@@ -7,9 +7,6 @@ export const methods = {
   get(key) {
     return storage.getString(key)
   },
-  delete(key) {
-    return storage.removeString(key)
-  },
   close() {
     return storage.stop()
   }
