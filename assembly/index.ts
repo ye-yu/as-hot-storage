@@ -60,7 +60,7 @@ export function getString(key: string): string | null {
   return storedValue.value;
 }
 
-function removeString(key: string): void {
+export function removeString(key: string): void {
   removeFromStorage(stringStorage, key);
 }
 
@@ -94,7 +94,7 @@ export function getInt(key: string): i32 {
   return storedValue.value;
 }
 
-function removeInt(key: string): void {
+export function removeInt(key: string): void {
   removeFromStorage(intStorage, key);
 }
 
@@ -137,7 +137,7 @@ export function activeKeys(): i32 {
   return keyInfos.values().filter(keyIsActive).length
 }
 
-function removeFloat(key: string): void {
+export function removeFloat(key: string): void {
   removeFromStorage(floatStorage, key);
 }
 
