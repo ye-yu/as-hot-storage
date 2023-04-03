@@ -44,16 +44,16 @@ jobs:
         run: npm install --prefer-offline --no-audit
 
       - name: Run benchmark (memory)
-        run: make dist && node --expose-gc benchmark/memory/benchmark.mjs hot-storage
+        run: make benchmark && node --expose-gc benchmark/memory/benchmark.mjs hot-storage
 
       - name: Run benchmark (cpu)
-        run: make dist && node --expose-gc benchmark/cpu/benchmark.mjs hot-storage
+        run: make benchmark && node --expose-gc benchmark/cpu/benchmark.mjs hot-storage
 
       - name: Run benchmark (speed)
-        run: make dist && node --expose-gc benchmark/speed/benchmark.mjs hot-storage
+        run: make benchmark && node --expose-gc benchmark/speed/benchmark.mjs hot-storage
 
       - name: Run benchmark (gc)
-        run: make dist && node --expose-gc benchmark/gc/benchmark.mjs hot-storage
+        run: make benchmark && node --expose-gc benchmark/gc/benchmark.mjs hot-storage
 
   plain:
     runs-on: ubuntu-latest
@@ -87,16 +87,16 @@ jobs:
         run: npm install --prefer-offline --no-audit
 
       - name: Run benchmark (memory)
-        run: make dist && node --expose-gc benchmark/memory/benchmark.mjs plain
+        run: make benchmark && node --expose-gc benchmark/memory/benchmark.mjs plain
 
       - name: Run benchmark (cpu)
-        run: make dist && node --expose-gc benchmark/cpu/benchmark.mjs plain
+        run: make benchmark && node --expose-gc benchmark/cpu/benchmark.mjs plain
 
       - name: Run benchmark (speed)
-        run: make dist && node --expose-gc benchmark/speed/benchmark.mjs plain
+        run: make benchmark && node --expose-gc benchmark/speed/benchmark.mjs plain
 
       - name: Run benchmark (gc)
-        run: make dist && node --expose-gc benchmark/gc/benchmark.mjs plain
+        run: make benchmark && node --expose-gc benchmark/gc/benchmark.mjs plain
 
   redis:
     runs-on: ubuntu-latest
@@ -143,16 +143,16 @@ jobs:
 
       - name: Run benchmark (memory)
         run: |
-          make dist && node --expose-gc benchmark/memory/benchmark.mjs redis
+          make benchmark && node --expose-gc benchmark/memory/benchmark.mjs redis
 
       - name: Run benchmark (cpu)
         run: |
-          make dist && node --expose-gc benchmark/cpu/benchmark.mjs redis
+          make benchmark && node --expose-gc benchmark/cpu/benchmark.mjs redis
 
       - name: Run benchmark (speed)
         run: |
-          make dist && node --expose-gc benchmark/speed/benchmark.mjs redis
+          make benchmark && node --expose-gc benchmark/speed/benchmark.mjs redis
 
       - name: Run benchmark (gc)
         run: |
-          make dist && node --expose-gc benchmark/gc/benchmark.mjs redis
+          make benchmark && node --expose-gc benchmark/gc/benchmark.mjs redis
