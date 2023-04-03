@@ -102,7 +102,7 @@ jobs:
       - name: Wait for redis
         timeout-minutes: 5
         run: |
-          while ! redis-cli ping; do
+          while ! node -p -e "r=require('ioredis');c=new r(6379,process.env.REDIS_HOST);c.on('error', ()=>c.disconnect());c.ping().catch(()=>process.exit(1)).finally(()=>c.disconnect())"; do
             sleep 1
           done
 
