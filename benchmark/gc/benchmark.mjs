@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 
 const [, , type] = process.argv;
 
-if (type !== "redis" && type !== "hot-storage") {
+if (type !== "redis" && type !== "hot-storage" && type !== "plain") {
   throw new Error("pass the correct benchmarking type: redis or hot-storage");
 }
 

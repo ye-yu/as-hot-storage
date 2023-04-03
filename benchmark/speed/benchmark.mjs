@@ -2,11 +2,11 @@ import { randomUUID } from "crypto"
 
 const [,,type] = process.argv
 
-if (type !== "redis" && type !== "hot-storage") {
+if (type !== "redis" && type !== "hot-storage" && type !== "plain") {
   throw new Error("pass the correct benchmarking type: redis or hot-storage")
 }
 
-const { methods } = type === "redis" ? await import("./redis.mjs") : await import("./hot-storage.mjs")
+const { methods } = type === "redis" ? await import("./redis.mjs") : type === "plain" ? await import("./plain-storage.mjs") : await import("./hot-storage.mjs")
 
 const formatMemoryUsage = (data) => `${Math.round(data / 1024 / 1024 * 100) / 100} MB`;
 function getFormattedMemoryUsage() {

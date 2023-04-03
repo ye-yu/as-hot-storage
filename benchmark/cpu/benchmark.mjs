@@ -4,11 +4,11 @@ const os = await import('os');
 
 const [,,type] = process.argv
 
-if (type !== "redis" && type !== "hot-storage") {
+if (type !== "redis" && type !== "hot-storage" && type !== "plain") {
   throw new Error("pass the correct benchmarking type: redis or hot-storage")
 }
 
-const { methods } = type === "redis" ? await import("./redis.mjs") : await import("./hot-storage.mjs")
+const { methods } = type === "redis" ? await import("./redis.mjs") : type === "plain" ? await import("./plain-storage.mjs") : await import("./hot-storage.mjs")
 
 const cpu = os.cpus()[0];
 
