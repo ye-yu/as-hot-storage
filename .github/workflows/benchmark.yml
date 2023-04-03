@@ -55,6 +55,49 @@ jobs:
       - name: Run benchmark (gc)
         run: make dist && node --expose-gc benchmark/gc/benchmark.mjs hot-storage
 
+  plain:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        shell: bash
+        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+
+      - name: Cache node_modules 📦
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm install --prefer-offline --no-audit
+
+      - name: Run benchmark (memory)
+        run: make dist && node --expose-gc benchmark/memory/benchmark.mjs plain
+
+      - name: Run benchmark (cpu)
+        run: make dist && node --expose-gc benchmark/cpu/benchmark.mjs plain
+
+      - name: Run benchmark (speed)
+        run: make dist && node --expose-gc benchmark/speed/benchmark.mjs plain
+
+      - name: Run benchmark (gc)
+        run: make dist && node --expose-gc benchmark/gc/benchmark.mjs plain
+
   redis:
     runs-on: ubuntu-latest
 
@@ -102,18 +145,14 @@ jobs:
         run: |
           make dist && node --expose-gc benchmark/memory/benchmark.mjs redis
 
-
       - name: Run benchmark (cpu)
         run: |
           make dist && node --expose-gc benchmark/cpu/benchmark.mjs redis
-
 
       - name: Run benchmark (speed)
         run: |
           make dist && node --expose-gc benchmark/speed/benchmark.mjs redis
 
-
       - name: Run benchmark (gc)
         run: |
           make dist && node --expose-gc benchmark/gc/benchmark.mjs redis
-
