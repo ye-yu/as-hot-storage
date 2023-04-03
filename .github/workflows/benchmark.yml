@@ -102,38 +102,39 @@ jobs:
       - name: Wait for redis
         timeout-minutes: 5
         run: |
+          export REDIS_HOST=$(docker inspect redis > /tmp/redis.json && node -p -e "require('/tmp/redis.json')[0].NetworkSettings.Networks.bridge.IPAddress")
           while ! node -p -e "r=require('ioredis');c=new r(6379,process.env.REDIS_HOST);c.on('error', ()=>c.disconnect());c.ping().catch(()=>process.exit(1)).finally(()=>c.disconnect())"; do
             sleep 1
           done
 
       - name: Run benchmark (memory)
-        run: make dist && node --expose-gc benchmark/memory/benchmark.mjs redis
+        run: |
+          export REDIS_HOST=$(docker inspect redis > /tmp/redis.json && node -p -e "require('/tmp/redis.json')[0].NetworkSettings.Networks.bridge.IPAddress")
+          make dist && node --expose-gc benchmark/memory/benchmark.mjs redis
         env:
-          # The hostname used to communicate with the Redis service container
-          REDIS_HOST: redis
           # The default Redis port
           REDIS_PORT: 6379
 
       - name: Run benchmark (cpu)
-        run: make dist && node --expose-gc benchmark/cpu/benchmark.mjs redis
+        run: |
+          export REDIS_HOST=$(docker inspect redis > /tmp/redis.json && node -p -e "require('/tmp/redis.json')[0].NetworkSettings.Networks.bridge.IPAddress")
+          make dist && node --expose-gc benchmark/cpu/benchmark.mjs redis
         env:
-          # The hostname used to communicate with the Redis service container
-          REDIS_HOST: redis
           # The default Redis port
           REDIS_PORT: 6379
 
       - name: Run benchmark (speed)
-        run: make dist && node --expose-gc benchmark/speed/benchmark.mjs redis
+        run: |
+          export REDIS_HOST=$(docker inspect redis > /tmp/redis.json && node -p -e "require('/tmp/redis.json')[0].NetworkSettings.Networks.bridge.IPAddress")
+          make dist && node --expose-gc benchmark/speed/benchmark.mjs redis
         env:
-          # The hostname used to communicate with the Redis service container
-          REDIS_HOST: redis
           # The default Redis port
           REDIS_PORT: 6379
 
       - name: Run benchmark (gc)
-        run: make dist && node --expose-gc benchmark/gc/benchmark.mjs redis
+        run: |
+          export REDIS_HOST=$(docker inspect redis > /tmp/redis.json && node -p -e "require('/tmp/redis.json')[0].NetworkSettings.Networks.bridge.IPAddress")
+          make dist && node --expose-gc benchmark/gc/benchmark.mjs redis
         env:
-          # The hostname used to communicate with the Redis service container
-          REDIS_HOST: redis
           # The default Redis port
           REDIS_PORT: 6379
