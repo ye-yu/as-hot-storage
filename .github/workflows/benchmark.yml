@@ -61,20 +61,7 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x]
-
-    # Service containers to run with `container-job`
-    services:
-      # Label used to access the service container
-      redis:
-        # Docker Hub image
-        image: redis
-        # Set health checks to wait until redis has started
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
+        redis-version: [6]
     steps:
       - uses: actions/checkout@v3
 
@@ -82,6 +69,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+
+      - name: Start Redis
+        uses: supercharge/redis-github-action@1.5.0
+        with:
+          redis-version: ${{ matrix.redis-version }}
 
       - name: Get npm cache directory
         id: npm-cache-dir
@@ -102,39 +94,26 @@ jobs:
       - name: Wait for redis
         timeout-minutes: 5
         run: |
-          export REDIS_HOST=$(docker inspect redis > /tmp/redis.json && node -p -e "require('/tmp/redis.json')[0].NetworkSettings.Networks.bridge.IPAddress")
           while ! node -p -e "r=require('ioredis');c=new r(6379,process.env.REDIS_HOST);c.on('error', ()=>c.disconnect());c.ping().catch(()=>process.exit(1)).finally(()=>c.disconnect())"; do
             sleep 1
           done
 
       - name: Run benchmark (memory)
         run: |
-          export REDIS_HOST=$(docker inspect redis > /tmp/redis.json && node -p -e "require('/tmp/redis.json')[0].NetworkSettings.Networks.bridge.IPAddress")
           make dist && node --expose-gc benchmark/memory/benchmark.mjs redis
-        env:
-          # The default Redis port
-          REDIS_PORT: 6379
+
 
       - name: Run benchmark (cpu)
         run: |
-          export REDIS_HOST=$(docker inspect redis > /tmp/redis.json && node -p -e "require('/tmp/redis.json')[0].NetworkSettings.Networks.bridge.IPAddress")
           make dist && node --expose-gc benchmark/cpu/benchmark.mjs redis
-        env:
-          # The default Redis port
-          REDIS_PORT: 6379
+
 
       - name: Run benchmark (speed)
         run: |
-          export REDIS_HOST=$(docker inspect redis > /tmp/redis.json && node -p -e "require('/tmp/redis.json')[0].NetworkSettings.Networks.bridge.IPAddress")
           make dist && node --expose-gc benchmark/speed/benchmark.mjs redis
-        env:
-          # The default Redis port
-          REDIS_PORT: 6379
+
 
       - name: Run benchmark (gc)
         run: |
-          export REDIS_HOST=$(docker inspect redis > /tmp/redis.json && node -p -e "require('/tmp/redis.json')[0].NetworkSettings.Networks.bridge.IPAddress")
           make dist && node --expose-gc benchmark/gc/benchmark.mjs redis
-        env:
-          # The default Redis port
-          REDIS_PORT: 6379
+
