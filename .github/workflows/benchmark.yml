@@ -52,6 +52,9 @@ jobs:
       - name: Run benchmark (speed)
         run: make dist && node --expose-gc benchmark/speed/benchmark.mjs hot-storage
 
+      - name: Run benchmark (gc)
+        run: make dist && node --expose-gc benchmark/gc/benchmark.mjs hot-storage
+
   redis:
     runs-on: ubuntu-latest
 
@@ -96,6 +99,13 @@ jobs:
       - name: Install dependencies
         run: npm install --prefer-offline --no-audit
 
+      - name: Wait for redis
+        timeout-minutes: 5
+        run: |
+          while ! redis-cli ping; do
+            sleep 1
+          done
+
       - name: Run benchmark (memory)
         run: make dist && node --expose-gc benchmark/memory/benchmark.mjs redis
         env:
@@ -114,6 +124,14 @@ jobs:
 
       - name: Run benchmark (speed)
         run: make dist && node --expose-gc benchmark/speed/benchmark.mjs redis
+        env:
+          # The hostname used to communicate with the Redis service container
+          REDIS_HOST: redis
+          # The default Redis port
+          REDIS_PORT: 6379
+
+      - name: Run benchmark (gc)
+        run: make dist && node --expose-gc benchmark/gc/benchmark.mjs redis
         env:
           # The hostname used to communicate with the Redis service container
           REDIS_HOST: redis
