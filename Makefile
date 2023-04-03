@@ -15,3 +15,6 @@ prerelease: dist
 
 test: dist
 	bash ./run-tests.sh
+
+benchmark: dist
+	bash compile-plain-js.sh
