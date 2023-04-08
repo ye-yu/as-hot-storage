@@ -1,6 +1,6 @@
 {
   "name": "as-hot-storage",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "WASM Hot Storage",
   "description": "Redis-like hot storage written in AssemblyScript",
   "exports": {
