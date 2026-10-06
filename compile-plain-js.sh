@@ -10,7 +10,7 @@ SED_REGEX='s/([\} ]{0,1} from "(\.\/|\.\.\/){1,}[A-Za-z0-9\/]*)(";)/\1.js\3/'
 
 # find all js files within our compiled server code
 # and change the relative imports
-find dist/js -type f -name '*.js' -exec sed -ri "$SED_REGEX" {} +
+find dist/js -type f -name '*.js' -exec sh -c 'regex=$1; shift; for file do sed -E "$regex" "$file" > "$file.tmp" && mv "$file.tmp" "$file"; done' sh "$SED_REGEX" {} +
 
 # throw error for json encoder
 sed -E "s/import \{ JSONEncoder \} from \"\.\.\/node_modules\/assemblyscript-json\/assembly\"/Object.defineProperty(globalThis, \"JSONEncoder\", { get(){ throw new Error(\"Unsupported in JS version\") } });/" dist/js/storageInfo.js > dist/js/storageInfo.js1
