@@ -6,6 +6,8 @@ dist:
 	cp package.json dist
 	cp package-lock.json dist
 	cp README.md dist
+	cd dist && npm pkg delete scripts devDependencies
+	cd dist && npm install --package-lock-only --ignore-scripts
 
 publish: dist
 	cd dist && npm publish
@@ -18,3 +20,5 @@ test: dist
 
 benchmark: dist
 	bash compile-plain-js.sh
+
+.PHONY: publish prerelease test benchmark
